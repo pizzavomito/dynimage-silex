@@ -1,0 +1,27 @@
+{
+    "name": "dynimage-silex/dynimage-silex",
+    "description": "...",
+    "keywords": ["dynimage"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pascal Roux",
+            "email": "pascal.roux.fr@gmail.com"
+        }
+    ],
+    "require": {
+
+        "symfony/dependency-injection": "2.2.*@dev",
+        "symfony/config"        : "~2.3",
+        "dynimage/dynimage": "dev-master",
+        "dynimage-container-loader/dynimage-container-loader": "dev-master",
+        "silex/silex": "~1.1"
+        
+    },
+
+    "autoload": {
+        "psr-0": { 
+            "DynImageSilex": "src/"
+                }
+    }
+}
