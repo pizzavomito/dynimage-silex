@@ -19,7 +19,7 @@ class PackagerService {
 
     public function loadPackager() {
         try {
-            $this->packager = \DynImageManager\Loader\PackagerLoader::load($this->file, $this->cacheDir, $this->debug);
+            $this->packager = PackagerLoader::load($this->file, $this->cacheDir, $this->debug);
         } catch (Exception $e) {
             throw $e;
         }
