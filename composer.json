@@ -15,7 +15,8 @@
         "symfony/config"        : "~2.3",
         "dynimage/dynimage": "dev-master",
         "dynimage-container-loader/dynimage-container-loader": "dev-master",
-        "silex/silex": "~1.1"
+        "silex/silex": "~1.1",
+        "monolog/monolog"       : "~1.0"
         
     },
 
