@@ -85,7 +85,7 @@ class Controller {
         }
 
         $app['dynimage.image'] = DynImage::createImage(
-                        $module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameterBag()->all(), $module->getParameter('driver'));
+                        $module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
     }
 
 }
