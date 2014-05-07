@@ -77,7 +77,7 @@ class Controller {
             }
      
             $imageFilename = $module->getParameter('image_default');
-            $app['monolog']->addDebug("image by default : $imageFilename");
+            $app['monolog']->addDebug("image default : $imageFilename");
         }
 
         if ($module->hasParameter('enabled') && !$module->getParameter('enabled')) {
@@ -85,7 +85,7 @@ class Controller {
         }
 
         $app['dynimage.image'] = DynImage::createImage(
-                        $module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameter('lib'), $module->getParameterBag()->all());
+                        $module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameterBag()->all(), $module->getParameter('driver'));
     }
 
 }
