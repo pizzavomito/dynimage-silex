@@ -15,20 +15,7 @@ class ControllerProvider implements ControllerProviderInterface {
         $controllers->before('DynImageSilex\Controller::beforeAction');
         $controllers->after('DynImageSilex\Controller::terminateAction');
 
-        /** /
-        if (!isset($app['dynimage.routes'])) {
-            $app['dynimage.routes'] = array(
-                'main' => '/{package}/{module}'
-            );
-        }
-
-        foreach ($app['dynimage.routes'] as $key => $route) {
-
-            $controllers->get($route, function (Request $request) use ($app) {
-                return new Response;
-            })->bind('dynimage.' . $key);
-        }
-        /**/    
+          
         $depth = $app['dynimage.routes_depth'];
         $dir = '';
         for ($index = 0; $index < $depth; $index++) {

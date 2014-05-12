@@ -15,7 +15,7 @@ class Controller {
 
         $module = $app['module.service']->getModule();
 
-        if (!isset($app['dynimage.image']->image)) {
+        if (!isset($app['dynimage.image'])) {
 
             $app->abort(404);
         }
@@ -23,11 +23,11 @@ class Controller {
         if ($module->hasParameter('format')) {
             $format = $module->getParameter('format');
         } else {
-            $format = pathinfo($app['dynimage.image']->imagefilename, PATHINFO_EXTENSION);
+            $format = pathinfo($app['dynimage.imagefilename'], PATHINFO_EXTENSION);
         }
 
         $response->headers->set('Content-Type', 'image/' . $format);
-        $response->setContent($app['dynimage.image']->image->get($format));
+        $response->setContent($app['dynimage.image']->get($format));
 
         $response->setPublic();
         //$response->setStatusCode(200);
@@ -84,8 +84,12 @@ class Controller {
             throw new NotFoundHttpException();
         }
 
-        $app['dynimage.image'] = DynImage::createImage(
-                        $module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
+        $app['dynimage.imagefilename'] = $imageFilename;
+        $di = $module->get('dynimage');
+        $app['dynimage.image'] = $di->apply(file_get_contents($imageFilename), $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
+        
+        //$app['dynimage.image'] = DynImage::createImage(
+                        //$module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
     }
 
 }
