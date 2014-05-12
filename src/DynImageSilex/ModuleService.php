@@ -11,26 +11,36 @@ class ModuleService {
     public $file;
     public $cacheDir;
     public $debug;
+    private $extensions = array();
 
     public function __construct($cacheDir, $debug = true) {
-        
+
         $this->cacheDir = $cacheDir;
         $this->debug = $debug;
     }
 
-    public function loadModule($file,$package='') {
+    public function addExtension($extension) {
+        $this->extensions[] = $extension;
+    }
+
+    public function loadModule($file, $package = '') {
         $this->file = $file;
         try {
-            $extension = new Extension();
-            $this->module = ContainerLoader::load($this->file, $this->cacheDir.'/'.$package, $this->debug, array($extension));
+            $extensions = array();
+            if (!empty($this->extensions)) {
+                foreach ($this->extensions as $extension) {
+                    $extensions[] = new $extension;
+                }
+            }
+            $this->module = ContainerLoader::load($this->file, $this->cacheDir . '/' . $package, $this->debug, $extensions);
         } catch (Exception $e) {
             throw $e;
         }
     }
 
-    public function getModule($file=null,$package=null) {
+    public function getModule($file = null, $package = null) {
         if (!is_object($this->module)) {
-            $this->loadModule($file,$package);
+            $this->loadModule($file, $package);
         }
 
         return $this->module;
@@ -40,16 +50,13 @@ class ModuleService {
         return dirname($this->file);
     }
 
-   
-
     public function isWritable() {
         $writable = false;
         if (is_writable($this->file) && is_writable(dirname($this->file))) {
             $writable = true;
         }
-        
+
         return $writable;
     }
-   
 
 }

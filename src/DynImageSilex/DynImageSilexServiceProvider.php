@@ -14,7 +14,15 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
 
 
         $app['module.service'] = $app->share(function () use ($app) {
-            return new ModuleService($app['dynimage.cache_dir'], $app['env']);
+            $m = new ModuleService($app['dynimage.cache_dir'], $app['env']);
+            $m->addExtension('DynImageSilex\Extension');
+            if (!empty($app['dynimage.extensions'])) {
+                foreach($app['dynimage.extensions'] as $extension) {
+                    $m->addExtension($extension);
+                }
+            }
+            
+            return $m;
         });
 
         $app['packager.service'] = $app->share(function () use ($app) {
@@ -27,7 +35,7 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
     public function boot(Application $app) {
         define('APP_DIR', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
         define('ENV', $app['env']);
-        $app->mount('/' . $app['dynimage.routes_prefix'], new ControllerProvider());
+        $app->get('/' . $app['dynimage.routes_prefix'], new ControllerProvider());
     }
 
 }
