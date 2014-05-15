@@ -13,9 +13,25 @@ class Controller {
     public function terminateAction(Request $request, Response $response, Application $app) {
         $app['monolog']->addDebug('entering dynimage terminate');
 
-        $module = $app['module.service']->getModule();
+        $imageTime = filemtime($app['dynimage.imagefilename']);
+        $moduleCompiledTime = filemtime($app['module.service']->getCompiledFilename());
+        
+        $response->setETag(md5($imageTime . $moduleCompiledTime));
+        
+        if ($response->isNotModified($request)) {
+           
+            return $response;
+        }
 
-        if (!isset($app['dynimage.image'])) {
+        
+        $module = $app['module.service']->getModule();
+        $dynimage = $module->get('dynimage');
+
+        
+        $imageContent = file_get_contents($app['dynimage.imagefilename']);
+        $image = $dynimage->apply($imageContent, $module->getParameter('dynimage.driver'));
+
+        if (!isset($image)) {
 
             $app->abort(404);
         }
@@ -27,10 +43,26 @@ class Controller {
         }
 
         $response->headers->set('Content-Type', 'image/' . $format);
-        $response->setContent($app['dynimage.image']->get($format));
+
+        ob_start();
+
+        echo $image->get($format);
+
+       
+        $imageData = ob_get_contents();
+
+        $imageDataLength = ob_get_length();
+
+        ob_end_clean();
+
+        $response->setContent($imageData);
+
+        
+
+        $response->headers->set("Content-Length", $imageDataLength);
 
         $response->setPublic();
-        //$response->setStatusCode(200);
+
         if ($module->hasParameter('ttl')) {
 
             $response->setTtl($module->getParameter('ttl'));
@@ -40,8 +72,10 @@ class Controller {
     }
 
     public function beforeAction(Request $request, Application $app) {
+
         $package = $request->attributes->get('package');
         $module = $request->attributes->get('module');
+
 
         $depth = $app['dynimage.routes_depth'];
 
@@ -67,15 +101,15 @@ class Controller {
         }
 
         $app['monolog']->addDebug("image : $imageFilename");
-        
+
         if (!file_exists($imageFilename) || !is_file($imageFilename)) {
             $app['monolog']->addDebug("image not found");
-            
+
             if (!$module->hasParameter('image_default')) {
 
                 throw new NotFoundHttpException();
             }
-     
+
             $imageFilename = $module->getParameter('image_default');
             $app['monolog']->addDebug("image default : $imageFilename");
         }
@@ -85,11 +119,7 @@ class Controller {
         }
 
         $app['dynimage.imagefilename'] = $imageFilename;
-        $di = $module->get('dynimage');
-        $app['dynimage.image'] = $di->apply(file_get_contents($imageFilename), $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
         
-        //$app['dynimage.image'] = DynImage::createImage(
-                        //$module->get('transformer'), file_get_contents($imageFilename), $imageFilename, $module->getParameter('dynimage.driver'), $module->getParameterBag()->all());
     }
 
 }

@@ -12,6 +12,7 @@ class ModuleService {
     public $cacheDir;
     public $debug;
     private $extensions = array();
+    private $compiledFilename;
 
     public function __construct($cacheDir, $debug = true) {
 
@@ -32,10 +33,16 @@ class ModuleService {
                     $extensions[] = new $extension;
                 }
             }
+            $this->compiledFilename = $this->cacheDir . '/' . $package . '/'. pathinfo($this->file, PATHINFO_FILENAME) . '.php';
+            
             $this->module = ContainerLoader::load($this->file, $this->cacheDir . '/' . $package, $this->debug, $extensions);
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    public function getCompiledFilename() {
+        return $this->compiledFilename;
     }
 
     public function getModule($file = null, $package = null) {

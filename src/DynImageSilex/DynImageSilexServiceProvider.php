@@ -30,12 +30,15 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
             $p->moduleService = $app['module.service'];
             return $p;
         });
+       
     }
 
     public function boot(Application $app) {
         define('APP_DIR', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
         define('ENV', $app['env']);
-        $app->get('/' . $app['dynimage.routes_prefix'], new ControllerProvider());
+        
+        
+        $app->mount('/' . $app['dynimage.routes_prefix'], new ControllerProvider());
     }
 
 }
