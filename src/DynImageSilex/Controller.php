@@ -19,7 +19,7 @@ class Controller {
         $response->setETag(md5($imageTime . $moduleCompiledTime));
         
         if ($response->isNotModified($request)) {
-           
+            $app['monolog']->addDebug('image not modified');
             return $response;
         }
 

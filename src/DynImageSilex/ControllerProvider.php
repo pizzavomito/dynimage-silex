@@ -16,7 +16,23 @@ class ControllerProvider implements ControllerProviderInterface {
         $controllers->before('DynImageSilex\Controller::beforeAction');
         $controllers->after('DynImageSilex\Controller::terminateAction');
 
+        $controllers->get('/{package}/{module}/', function (Request $request) use ($app) {
+                $response = new Response;
 
+                return $response;
+            });
+        /**/
+        if (isset($app['dynimage.routes'])) {
+            
+
+            foreach ($app['dynimage.routes'] as $key => $route) {
+
+                $controllers->get($route, function (Request $request) use ($app) {
+                    return new Response;
+                })->bind('dynimage.' . $key);
+            }
+        }
+        /* */
         $depth = $app['dynimage.routes_depth'];
         $dir = '';
         for ($index = 0; $index < $depth; $index++) {
@@ -32,7 +48,7 @@ class ControllerProvider implements ControllerProviderInterface {
         $controllers->get('/{package}/{module}/{imageFilename}', function (Request $request) use ($app) {
 
             $response = new Response;
-            
+
             return $response;
         });
 

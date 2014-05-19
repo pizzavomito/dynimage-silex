@@ -14,7 +14,7 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
 
 
         $app['module.service'] = $app->share(function () use ($app) {
-            $m = new ModuleService($app['dynimage.cache_dir'], $app['env']);
+            $m = new ModuleService($app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
             $m->addExtension('DynImageSilex\Extension');
             if (!empty($app['dynimage.extensions'])) {
                 foreach($app['dynimage.extensions'] as $extension) {
@@ -26,7 +26,7 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
         });
 
         $app['packager.service'] = $app->share(function () use ($app) {
-            $p = new PackagerService($app['dynimage.packager_file'], $app['dynimage.cache_dir'], $app['env']);
+            $p = new PackagerService($app['dynimage.packager_file'], $app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
             $p->moduleService = $app['module.service'];
             return $p;
         });

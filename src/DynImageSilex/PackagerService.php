@@ -20,7 +20,7 @@ class PackagerService {
     public function loadPackager() {
         try {
             $this->packager = PackagerLoader::load($this->file, $this->cacheDir, $this->debug);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -40,6 +40,9 @@ class PackagerService {
     public function getPackages() {
         $parameters = $this->getPackager()->getParameterBag()->all();
 
+        if (!isset($parameters['packages'])) {
+            throw new \Exception('Failed to load packages.');
+        }
         return $parameters['packages'];
     }
 
