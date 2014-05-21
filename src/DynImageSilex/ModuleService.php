@@ -3,7 +3,7 @@
 namespace DynImageSilex;
 
 use DynImageContainerLoader\ContainerLoader;
-use DynImageSilex\Extension;
+
 
 class ModuleService {
 
@@ -24,7 +24,11 @@ class ModuleService {
         $this->extensions[] = $extension;
     }
 
-    public function loadModule($file, $package = '') {
+    public function compile($file, $package) {
+        $this->loadModule($file, $package, true);
+    }
+    
+    private function loadModule($file, $package = '', $reload=false) {
         $this->file = $file;
         try {
             $extensions = array();

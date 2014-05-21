@@ -6,7 +6,15 @@
     <parameters>
         <parameter key="dynimage.app_dir" type="constant">APP_DIR</parameter>
         <parameter key="dynimage.env" type="constant">ENV</parameter>
+        <parameter key="dynimage.package_class">DynImageSilex\Package</parameter>
+        <parameter key="dynimage.packager_class">DynImageSilex\Packager</parameter>
     </parameters>
+    <services>
+
+        <service id="dynimage.packager" class="%dynimage.packager_class%">
+            
+        </service>
        
+    </services> 
    
 </container>

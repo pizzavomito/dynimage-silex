@@ -88,7 +88,7 @@ class Controller {
         }
 
 
-        $module = $app['packager.service']->getModule($package, $module);
+        $module = $app['package.service']->getModule($package, $module);
 
 
         $imageFilename .= $request->attributes->get('imageFilename');

@@ -4,7 +4,7 @@ namespace DynImageSilex;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use DynImageSilex\PackagerService;
+use DynImageSilex\PackageService;
 use DynImageSilex\ModuleService;
 use DynImageSilex\ControllerProvider;
 
@@ -25,8 +25,8 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
             return $m;
         });
 
-        $app['packager.service'] = $app->share(function () use ($app) {
-            $p = new PackagerService($app['dynimage.packager_file'], $app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
+        $app['package.service'] = $app->share(function () use ($app) {
+            $p = new PackageService($app['dynimage.available_dir'],$app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
             $p->moduleService = $app['module.service'];
             return $p;
         });
