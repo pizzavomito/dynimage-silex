@@ -19,6 +19,7 @@ class CompilerPass implements CompilerPassInterface {
 
         $packages = $container->findTaggedServiceIds('dynimage.package');
 
+        
         foreach ($packages as $id => $tagAttributes) {
 
             $packager->addMethodCall(

@@ -26,7 +26,7 @@ class DynImageSilexServiceProvider implements ServiceProviderInterface {
         });
 
         $app['package.service'] = $app->share(function () use ($app) {
-            $p = new PackageService($app['dynimage.available_dir'],$app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
+            $p = new PackageService($app['dynimage.packages_dir'],$app['dynimage.cache_dir'].'/'.$app['env'], $app['debug']);
             $p->moduleService = $app['module.service'];
             return $p;
         });

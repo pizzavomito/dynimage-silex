@@ -17,12 +17,13 @@ use DynImageSilex\CompilerPass;
  */
 class PackageContainerLoader {
 
-    static public function load($files, $cache_dir, $debug, $reload=false) {
+    static public function load($files, $cache_dir, $debug, $reload=false, $className=null) {
 
-        $filename = 'packagesContainer';
-        $config = new ConfigCache($cache_dir . '/' . $filename . '.php', $debug);
+        if (is_null($className)) {
+            $className = 'packageContainer';
+        }
+        $config = new ConfigCache($cache_dir . '/' . $className . '.php', $debug);
 
-        $className = str_replace('.', '', $filename);
 
         if (!$config->isFresh() || $reload) {
             $container = new ContainerBuilder();
@@ -51,7 +52,7 @@ class PackageContainerLoader {
             }
         }
 
-        require $cache_dir . '/' . $filename . '.php';
+        require $cache_dir . '/' . $className . '.php';
         return new $className;
     }
 

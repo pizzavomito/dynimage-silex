@@ -17,28 +17,37 @@ class PackageService {
         $this->cacheDir = $cacheDir;
         $this->debug = $debug;
     }
-    
-    public function compile($dir=null) {
+
+    public function compile($dir = null, $className = null, $filename=null) {
         if (!is_null($dir)) {
             $this->cacheDir = $dir;
         }
-        $this->loadContainer(true);
+
+        if (!is_null($className)) {
+            $this->cacheDir = $dir;
+        }
+        $this->loadContainer(true, $className, $filename);
     }
 
     public function getContainer($reload = false) {
-       
+
         $this->loadContainer($reload);
-  
+
         return $this->container;
     }
 
-    private function loadContainer($reload) {
+    private function loadContainer($reload, $className = null, $file = null) {
         try {
             if ($reload) {
                 $this->container = null;
             }
             if (!is_object($this->container)) {
-                $this->container = PackageContainerLoader::load(glob($this->availableDir . "/*.xml"), $this->cacheDir, $this->debug, $reload);
+                if (!is_null($file)) {
+                    
+                    $this->container = PackageContainerLoader::load(array($this->availableDir . "/" . $file), $this->cacheDir, false, $reload, $className);
+                } else {
+                    $this->container = PackageContainerLoader::load(glob($this->availableDir . "/*.xml"), $this->cacheDir, false, $reload, $className);
+                }
             }
         } catch (\Exception $e) {
             throw $e;
@@ -67,13 +76,13 @@ class PackageService {
         }
         return $packages;
     }
-    
+
     public function getPackagesFilename() {
         $tmp = array();
-        foreach(glob($this->availableDir . "/*.xml") as $filename) {
+        foreach (glob($this->availableDir . "/*.xml") as $filename) {
             $tmp[] = basename($filename);
         }
-            
+
         return $tmp;
     }
 

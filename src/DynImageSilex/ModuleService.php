@@ -38,8 +38,12 @@ class ModuleService {
                 }
             }
             $this->compiledFilename = $this->cacheDir . '/' . $package . '/'. pathinfo($this->file, PATHINFO_FILENAME) . '.php';
-            
-            $this->module = ContainerLoader::load($this->file, $this->cacheDir . '/' . $package, $this->debug, $extensions);
+            $className = $package.pathinfo($this->file, PATHINFO_FILENAME);
+             if (!file_exists($this->file)) {
+                throw new \InvalidArgumentException(
+                sprintf("Module file '%s' does not exist. ",$this->file));
+            }
+            $this->module = ContainerLoader::load($this->file, $this->cacheDir . '/' . $package, false, $extensions,$reload,$className);
         } catch (Exception $e) {
             throw $e;
         }
